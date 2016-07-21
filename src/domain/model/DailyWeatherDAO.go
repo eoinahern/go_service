@@ -20,7 +20,7 @@ type DailyWeatherDAO struct {
 	dbconn *Database
 }
 
-func (dw *DailyWeatherDAO) Insert(weatheritems []*entities.DailyWeather) {
+func (dw *DailyWeatherDAO) Insert(weatheritems []*entities.DailyWeather) bool {
 
 	keyStrings := make([]string, 17)
 	values := make([]interface{}, 0)
@@ -50,12 +50,20 @@ func (dw *DailyWeatherDAO) Insert(weatheritems []*entities.DailyWeather) {
 
 	}
 
-	stmt := fmt.Sprintf(`INSERT into dailyweather () VALUES %s`, strings.Join(keyStrings, ","))
+	stmt := fmt.Sprintf(`INSERT into dailyweather (name, time, summary,
+		icon, sunriseTime, sunsetTime, precipProbability, temperatureMin, temperatureMinTime,
+		temperatureMax, temperatureMaxTime, apparentTemperatureMaxTime, dewPoint,
+		windSpeed, humidity, pressure, cloudCover) VALUES %s`, strings.Join(keyStrings, ","))
+
 	_, err := dw.dbconn.mydbconn.Exec(stmt, values...)
 
 	if err != nil {
 		println("data not inserted")
+		return false
 	}
+
+	return true
+
 }
 
 func (dw *DailyWeatherDAO) Delete() {

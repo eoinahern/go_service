@@ -2,6 +2,6 @@ package tests
 
 import "testing"
 
-func Test_getweather(t *testing.T) {
+func Test_Insert(t *testing.T) {
 
 }
