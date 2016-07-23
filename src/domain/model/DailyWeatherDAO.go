@@ -10,9 +10,9 @@ import (
 )
 
 func NewDailyWeatherDAO(dbconnin *Database) *DailyWeatherDAO {
-	d_weather := new(DailyWeatherDAO)
-	d_weather.dbconn = dbconnin
-	return d_weather
+	dweather := new(DailyWeatherDAO)
+	dweather.dbconn = dbconnin
+	return dweather
 
 }
 
@@ -64,6 +64,35 @@ func (dw *DailyWeatherDAO) Insert(weatheritems []*entities.DailyWeather) bool {
 
 	return true
 
+}
+
+//pretty verbose to just count rows in a DB table lol.
+
+func (dw *DailyWeatherDAO) CountRows() int {
+	rows, err := dw.dbconn.mydbconn.Query("SELECT COUNT (*) as count FROM dailyweather")
+	if err != nil {
+		println("couldnt count rows!!!")
+		log.Fatal(err)
+	}
+
+	defer rows.Close()
+	return checkcount(rows)
+
+}
+
+func checkcount(rows *sql.Rows) (count int) {
+
+	for rows.Next() {
+		err = rows.Scan(&count)
+		checkerr(err)
+	}
+	return count
+}
+
+func checkerr(err error) {
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (dw *DailyWeatherDAO) Delete() {
