@@ -72,7 +72,7 @@ func (dw *DailyWeatherDAO) Insert(weatheritems []*entities.DailyWeather) bool {
 //pretty verbose to just count rows in a DB table lol.
 
 func (dw *DailyWeatherDAO) CountRows() int {
-	rows, err := dw.dbconn.mydbconn.Query("SELECT COUNT (*) as count FROM dailyweather")
+	rows, err := dw.dbconn.mydbconn.Query("SELECT COUNT(*) FROM dailyweather")
 	if err != nil {
 		println("couldnt count rows!!!")
 		log.Fatal(err)
@@ -83,7 +83,9 @@ func (dw *DailyWeatherDAO) CountRows() int {
 
 }
 
-func checkcount(rows *sql.Rows) (count int) {
+func checkcount(rows *sql.Rows) int {
+
+	var count int
 
 	for rows.Next() {
 		err := rows.Scan(&count)
@@ -98,8 +100,19 @@ func checkerr(err error) {
 	}
 }
 
-func (dw *DailyWeatherDAO) Delete() {
+func (dw *DailyWeatherDAO) Delete(city string, time int) int {
 
+	stmt := fmt.Sprintf("Delete FROM dailyweather WHERE name = '%s' AND time = %d", city, time)
+	println(stmt)
+
+	rows, err := dw.dbconn.mydbconn.Query(stmt)
+	if err != nil {
+		println("delete failed")
+		return -1
+	}
+
+	defer rows.Close()
+	return checkcount(rows)
 }
 
 func (dw *DailyWeatherDAO) Get(city string) []entities.DailyWeather {
