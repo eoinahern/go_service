@@ -22,13 +22,12 @@ type DailyWeatherDAO struct {
 
 func (dw *DailyWeatherDAO) Insert(weatheritems []*entities.DailyWeather) bool {
 
-	keyStrings := make([]string, 17)
+	keyStrings := make([]string, 0)
 	values := make([]interface{}, 0)
 
 	for _, weatherval := range weatheritems {
 
-		keyStrings = append(keyStrings, `(?, ?, ?,
-		 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+		keyStrings = append(keyStrings, `(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 
 		values = append(values, weatherval.Name)
 		values = append(values, weatherval.Time)
@@ -54,6 +53,10 @@ func (dw *DailyWeatherDAO) Insert(weatheritems []*entities.DailyWeather) bool {
 		icon, sunriseTime, sunsetTime, precipProbability, temperatureMin, temperatureMinTime,
 		temperatureMax, temperatureMaxTime, apparentTemperatureMaxTime, dewPoint,
 		windSpeed, humidity, pressure, cloudCover) VALUES %s`, strings.Join(keyStrings, ","))
+
+	fmt.Println(stmt)
+	fmt.Println(strings.Join(keyStrings, ","))
+	fmt.Println(values)
 
 	_, err := dw.dbconn.mydbconn.Exec(stmt, values...)
 
@@ -83,7 +86,7 @@ func (dw *DailyWeatherDAO) CountRows() int {
 func checkcount(rows *sql.Rows) (count int) {
 
 	for rows.Next() {
-		err = rows.Scan(&count)
+		err := rows.Scan(&count)
 		checkerr(err)
 	}
 	return count

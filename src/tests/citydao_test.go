@@ -10,12 +10,12 @@ import (
 
 func Test_getbycity(t *testing.T) {
 
+	t.Parallel()
 	dbconn := model.NewDatabase("eoin", "pass", "weather_app")
 	citydao := model.NewCityDAO(dbconn)
 	cities := citydao.GetAllCities()
 
 	for _, city := range cities {
-
 		if city.Name != "cork" && city.Name != "dublin" {
 			t.Error("unknown city")
 		}
@@ -23,7 +23,6 @@ func Test_getbycity(t *testing.T) {
 		if city.Latitude > 55.00 || city.Latitude < 51.00 {
 			t.Error("lat incorrect for Ireland!")
 		}
-
 	}
 
 	if len(cities) != 2 {

@@ -7,32 +7,79 @@ import (
 	"github.com/eoinahern/go_service/src/domain/model"
 )
 
-var name = "eoin"
-var pass = "pass"
-var db = "weather_app"
-var database = model.NewDatabase(name, pass, db)
-var dailywdao = model.NewDailyWeatherDAO(database)
-var dailyweather = entities.NewDailyWeather()
+//could do with another test db here.
+//at present testing prod.
+
+var name string
+var pass string
+var db string
+var database model.Database
+var dailywdao *model.DailyWeatherDAO
+
+func init() {
+	var name = "eoin"
+	var pass = "pass"
+	var db = "weather_app"
+	var database = model.NewDatabase(name, pass, db)
+	dailywdao = model.NewDailyWeatherDAO(database)
+}
 
 func Test_Insert(t *testing.T) {
 
-	testdw = create_dailyweather()
+	t.Parallel()
+	dailwslice := create_dailyweather()
 
-	if "" != "eoin" {
-		t.Error("incorrect name param!!")
+	inserted := dailywdao.Insert(dailwslice)
+	if inserted == false {
+		t.Error("insert failed!!! oops!!")
 	}
 
-	t.Error("error because!!")
 }
 
-func create_dailyweather() entities.DailyWeather {
-	dailyweather.Name = "ea"
-	dailyweather.Summary = "ea"
-	dailyweather.Time = "ea"
-	dailyweather.PrecipProbability = "ea"
-	dailyweather.Pressure = "ea"
-	dailyweather.Icon = "ea"
-	dailyweather.SunriseTime = "ea"
-	dailyweather.Name = "ea"
+//count rows arter item deleted
+func Test_Delete(t *testing.T) {
 
+	testdw := create_dailyweather()
+	inserted := dailywdao.Insert(testdw)
+	if inserted == false {
+		t.Error("insert failed!!! oops!! delete test")
+	}
+
+	count := dailywdao.CountRows()
+
+	//delete
+
+	if count <= dailywdao.CountRows() {
+		t.Error("delete failed!!!")
+	}
+
+}
+
+func create_dailyweather() []*entities.DailyWeather {
+
+	//fake obj
+	dailwslice := make([]*entities.DailyWeather, 0)
+	dailyweather := entities.NewDailyWeather()
+
+	dailyweather.Name = "cork"
+	dailyweather.Summary = "lovely weather"
+	dailyweather.Time = 1469287025
+	dailyweather.PrecipProbability = 0.82
+	dailyweather.Pressure = 0.01
+	dailyweather.Icon = "no icon"
+	dailyweather.SunriseTime = 1469287025
+	dailyweather.DewPoint = 0.49
+	dailyweather.WindSpeed = 0.50
+	dailyweather.Humidity = 0.50
+	dailyweather.CloudCover = 0.70
+	dailyweather.SunsetTime = 1469287025
+	dailyweather.TemperatureMin = 21.5
+	dailyweather.TemperatureMinTime = 1469287025
+	dailyweather.TemperatureMax = 24.5
+	dailyweather.TemperatureMaxTime = 1469287025
+	dailyweather.ApparentTemperatureMaxTime = 1469287025
+
+	dailwslice = append(dailwslice, dailyweather)
+
+	return dailwslice
 }
