@@ -18,6 +18,10 @@ type Fullapi struct {
 	Dailydata entities.DailyWeatherContainer `json:"daily"`
 }
 
+func main() {
+	LoadServiceDataPerCity()
+}
+
 func LoadServiceDataPerCity() {
 
 	var apikey string = "63f0914cdd082e76d25b40161cbe70c4"
@@ -28,8 +32,8 @@ func LoadServiceDataPerCity() {
 
 	for _, cityval := range cities {
 
-		lat := strconv.FormatFloat(cityval.Latitude, 'E', 8, 64)
-		longit := strconv.FormatFloat(cityval.Longitude, 'E', 8, 64)
+		lat := strconv.FormatFloat(cityval.Latitude, 'f', 5, 64)
+		longit := strconv.FormatFloat(cityval.Longitude, 'f', 5, 64)
 
 		println(lat)
 		println(longit)
@@ -43,13 +47,14 @@ func LoadServiceDataPerCity() {
 		}
 
 		defer resp.Body.Close()
+
 		dailyweather := unmarshallData(resp)
 		weatherdatawname := appendName(cityval.Name, dailyweather.Dailydata.Dw)
+		fmt.Println(dailyweather.Dailydata.Dw)
 		go InsertData(weatherdatawname, dailyweatherdao)
 		resp.Body.Close()
 	}
 
-	//	InsertData(dailyweatherslice, dailyweatherdao)
 }
 
 func unmarshallData(resp *http.Response) *Fullapi {
@@ -61,9 +66,15 @@ func unmarshallData(resp *http.Response) *Fullapi {
 
 func appendName(citname string, dailywlist []*entities.DailyWeather) []*entities.DailyWeather {
 
+	name := fmt.Sprintf("citname is %s", citname)
+	println(name)
+
 	for ind, item := range dailywlist {
 		item.Name = citname
 		dailywlist[ind] = item
+
+		fmt.Println("hereeeee here!!")
+		fmt.Println(item)
 	}
 	return dailywlist
 }
@@ -72,9 +83,4 @@ func appendName(citname string, dailywlist []*entities.DailyWeather) []*entities
 
 func InsertData(dailyweather []*entities.DailyWeather, weatherdao *model.DailyWeatherDAO) {
 	weatherdao.Insert(dailyweather)
-
-	println(dailyweather[0].Summary)
-	println(dailyweather[0].Icon)
-	println("")
-
 }

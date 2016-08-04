@@ -47,8 +47,7 @@ func Test_Delete(t *testing.T) {
 
 	count := dailywdao.CountRows()
 
-	deleted := dailywdao.Delete("cork", 1469287025)
-	println(deleted)
+	//deleted := dailywdao.Delete("cork", 1469287025)
 
 	//delete
 	if count <= dailywdao.CountRows() {
