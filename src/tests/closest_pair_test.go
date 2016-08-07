@@ -1,6 +1,10 @@
 package tests
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/eoinahern/go_service/src/utils"
+)
 
 func Test_Nearest(t *testing.T) {
 
@@ -9,8 +13,7 @@ func Test_Nearest(t *testing.T) {
 		"dublin": 6.00,
 	}
 
-	if Closest_coords.ShortestDist(list) != "cork" {
+	if utils.ShortestDist(list) != "cork" {
 		t.Error("wrong shortest found!!")
 	}
-
 }
