@@ -11,12 +11,14 @@ import (
 
 func NewDailyWeatherDAO(dbconnin *Database) *DailyWeatherDAO {
 	dweather := new(DailyWeatherDAO)
-	dweather.dbconn = dbconnin
+	dweather.base = NewBaseDao(dbconnin)
+	//dweather.dbconn = dbconnin
 	return dweather
 
 }
 
 type DailyWeatherDAO struct {
+	base   *baseDao
 	dbconn *Database
 }
 
@@ -58,7 +60,8 @@ func (dw *DailyWeatherDAO) Insert(weatheritems []*entities.DailyWeather) bool {
 	fmt.Println(strings.Join(keyStrings, ","))
 	fmt.Println(values)
 
-	_, err := dw.dbconn.mydbconn.Exec(stmt, values...)
+	//_, err := dw.dbconn.mydbconn.Exec(stmt, values...)
+	_, err := dw.base.db.mydbconn.Exec(stmt, values...)
 
 	if err != nil {
 		println("data not inserted")
@@ -72,32 +75,7 @@ func (dw *DailyWeatherDAO) Insert(weatheritems []*entities.DailyWeather) bool {
 //pretty verbose to just count rows in a DB table lol.
 
 func (dw *DailyWeatherDAO) CountRows() int {
-	rows, err := dw.dbconn.mydbconn.Query("SELECT COUNT(*) FROM dailyweather")
-	if err != nil {
-		println("couldnt count rows!!!")
-		log.Fatal(err)
-	}
-
-	defer rows.Close()
-	return checkcount(rows)
-
-}
-
-func checkcount(rows *sql.Rows) int {
-
-	var count int
-
-	for rows.Next() {
-		err := rows.Scan(&count)
-		checkerr(err)
-	}
-	return count
-}
-
-func checkerr(err error) {
-	if err != nil {
-		panic(err)
-	}
+	return dw.base.CountRows("dailyweather")
 }
 
 func (dw *DailyWeatherDAO) Delete(city string, time int) int {
@@ -105,7 +83,7 @@ func (dw *DailyWeatherDAO) Delete(city string, time int) int {
 	stmt := fmt.Sprintf("Delete FROM dailyweather WHERE name = '%s' AND time = %d", city, time)
 	println(stmt)
 
-	rows, err := dw.dbconn.mydbconn.Query(stmt)
+	rows, err := dw.base.db.mydbconn.Query(stmt)
 	if err != nil {
 		println("delete failed")
 		return -1

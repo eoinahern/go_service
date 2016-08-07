@@ -6,26 +6,30 @@ import (
 	"github.com/eoinahern/go_service/src/domain/model"
 )
 
-//intentionally failing tests!!!
+//failing tests now as more cities added to db.
 
 func Test_getbycity(t *testing.T) {
 
 	t.Parallel()
-	dbconn := model.NewDatabase("eoin", "pass", "weather_app")
+	dbconn := model.NewDatabase("eoin", "pass", "weather_app_test")
 	citydao := model.NewCityDAO(dbconn)
 	cities := citydao.GetAllCities()
 
 	for _, city := range cities {
-		if city.Name != "cork" && city.Name != "dublin" {
-			t.Error("unknown city")
+
+		//check cit within bounds
+
+		if city.Latitude > 55.00 || city.Latitude < 40.00 {
+			t.Error("lat out of bounded regoin")
 		}
 
-		if city.Latitude > 55.00 || city.Latitude < 51.00 {
-			t.Error("lat incorrect for Ireland!")
+		if city.Longitude > 3.00 || city.Longitude < -9.00 {
+			t.Error("long out of bounded region")
 		}
+
 	}
 
-	if len(cities) != 2 {
+	if len(cities) != 4 {
 		t.Error("incorrect cities number!!")
 	}
 }

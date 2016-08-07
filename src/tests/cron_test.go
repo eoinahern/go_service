@@ -8,6 +8,7 @@ import (
 
 func Test_cron(t *testing.T) {
 
+	t.Parallel()
 	count := dailywdao.CountRows()
 	cron.LoadServiceDataPerCity()
 

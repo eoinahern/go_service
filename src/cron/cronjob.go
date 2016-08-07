@@ -72,9 +72,6 @@ func appendName(citname string, dailywlist []*entities.DailyWeather) []*entities
 	for ind, item := range dailywlist {
 		item.Name = citname
 		dailywlist[ind] = item
-
-		fmt.Println("hereeeee here!!")
-		fmt.Println(item)
 	}
 	return dailywlist
 }

@@ -19,7 +19,7 @@ var dailywdao *model.DailyWeatherDAO
 func init() {
 	var name = "eoin"
 	var pass = "pass"
-	var db = "weather_app"
+	var db = "weather_app_test"
 	var database = model.NewDatabase(name, pass, db)
 	dailywdao = model.NewDailyWeatherDAO(database)
 }
@@ -28,7 +28,6 @@ func Test_Insert(t *testing.T) {
 
 	t.Parallel()
 	dailwslice := create_dailyweather()
-
 	inserted := dailywdao.Insert(dailwslice)
 	if inserted == false {
 		t.Error("insert failed!!! oops!!")
@@ -46,11 +45,9 @@ func Test_Delete(t *testing.T) {
 	}
 
 	count := dailywdao.CountRows()
+	dailywdao.Delete("cork", 1469287025)
 
-	//deleted := dailywdao.Delete("cork", 1469287025)
-
-	//delete
-	if count <= dailywdao.CountRows() {
+	if count > dailywdao.CountRows() {
 		t.Error("delete failed!!!")
 	}
 
