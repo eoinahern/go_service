@@ -11,10 +11,9 @@ import (
 func findClosest(cities []*entities.City, latitude float64, longitude float64) *entities.City {
 
 	return entities.NewCity()
-
 }
 
-func shortestDist(citiesmap map[string]float64) string {
+func ShortestDist(citiesmap map[string]float64) string {
 	var shortest = math.MaxFloat64
 	var smallestplacename string
 
