@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/eoinahern/go_service/src/domain/entities"
@@ -21,9 +22,10 @@ func Test_Nearest(t *testing.T) {
 func Test_Closest_Place(t *testing.T) {
 
 	citlist := getList()
-	distmap := GetDist(citlist, 39.9048, 1.15003)
+	distmap := GetDist(citlist, 40.9048, 2.15003)
 
 	if distmap["cork"] < distmap["barcelona"] {
+		fmt.Printf("cork : %f and barca : %f", distmap["cork"], distmap["barcelona"])
 		t.Error("innacurate distance calculation")
 	}
 
