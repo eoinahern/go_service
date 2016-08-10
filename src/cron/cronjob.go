@@ -32,6 +32,7 @@ func LoadServiceDataPerCity() {
 
 	for _, cityval := range cities {
 
+		//helper in utils possibly
 		lat := strconv.FormatFloat(cityval.Latitude, 'f', 5, 64)
 		longit := strconv.FormatFloat(cityval.Longitude, 'f', 5, 64)
 

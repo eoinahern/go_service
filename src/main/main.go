@@ -1,7 +1,7 @@
 package main
 
-import "routes"
+import "github.com/eoinahern/go_service/src/routes"
 
 func main() {
-	routes.NewRouter()
+	r := routes.NewRouter()
 }

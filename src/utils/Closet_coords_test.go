@@ -24,8 +24,9 @@ func Test_Closest_Place(t *testing.T) {
 	citlist := getList()
 	distmap := GetDist(citlist, 40.9048, 2.15003)
 
+	fmt.Printf("cork : %f and barca : %f", distmap["cork"], distmap["barcelona"])
+
 	if distmap["cork"] < distmap["barcelona"] {
-		fmt.Printf("cork : %f and barca : %f", distmap["cork"], distmap["barcelona"])
 		t.Error("innacurate distance calculation")
 	}
 

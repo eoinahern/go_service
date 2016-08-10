@@ -25,7 +25,7 @@ func (dw *CityDAO) Delete(cityid string) {
 
 }
 
-func (dw *CityDAO) GetByCity(cityid string) []entities.City {
+func (dw *CityDAO) GetByCity(cityid string) []*entities.City {
 
 	rows, err := dw.dbconn.mydbconn.Query("SELECT name, latitude, longitude FROM city WHERE name = ?;", cityid)
 
@@ -40,7 +40,7 @@ func (dw *CityDAO) GetByCity(cityid string) []entities.City {
 	return newrows
 }
 
-func (dw *CityDAO) GetAllCities() []entities.City {
+func (dw *CityDAO) GetAllCities() []*entities.City {
 
 	rows, err := dw.dbconn.mydbconn.Query("SELECT * FROM city;")
 
@@ -55,14 +55,14 @@ func (dw *CityDAO) GetAllCities() []entities.City {
 	return newrows
 }
 
-func createEntities(rows *sql.Rows) []entities.City {
+func createEntities(rows *sql.Rows) []*entities.City {
 
-	data := make([]entities.City, 0)
+	data := make([]*entities.City, 0)
 	for rows.Next() {
 
-		city := entities.NewCity()
+		var city = entities.NewCity()
 		rows.Scan(&city.Name, &city.Latitude, &city.Longitude)
-		data = append(data, *city)
+		data = append(data, city)
 	}
 
 	if len(data) < 1 {

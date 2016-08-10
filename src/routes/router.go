@@ -2,10 +2,16 @@ package routes
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/eoinahern/go_service/src/domain/model"
+	"github.com/eoinahern/go_service/src/utils"
 	"github.com/gin-gonic/gin"
 )
+
+/*
+* bit verbose for my liking also dont like this repeating dc connection.
+**/
 
 type Router struct {
 	Ginrouter   *gin.Engine
@@ -19,7 +25,7 @@ func NewRouter() *Router {
 	r.Routergroup = r.Ginrouter.Group("api/v1")
 	{
 		r.Routergroup.GET("/:id", GetCity)
-
+		r.Routergroup.GET("/:lat,:long", GetWeatherData)
 		r.Routergroup.DELETE("/", notImplemented)
 		r.Routergroup.POST("/", notImplemented)
 		r.Routergroup.PUT("/", notImplemented)
@@ -36,6 +42,7 @@ func notImplemented(c *gin.Context) {
 func GetCity(c *gin.Context) {
 
 	city := c.Param("id")
+
 	dbconn := model.NewDatabase("eoin", "pass", "weather_app")
 	citydao := model.NewCityDAO(dbconn)
 	citydata := citydao.GetByCity(city)
@@ -45,4 +52,39 @@ func GetCity(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, gin.H{"cities": citydata})
 	}
+}
+
+func GetWeatherData(c *gin.Context) {
+
+	//var lat float64 = c.Param("lat")
+	//var longit float64 = c.Param("long")
+
+	lat, err := strconv.ParseFloat(c.Param("lat"), 64)
+
+	if err != nil {
+		println("conv error")
+	}
+
+	longit, err := strconv.ParseFloat(c.Param("long"), 64)
+
+	if err != nil {
+		println("conv error")
+	}
+
+	println(lat)
+	println(longit)
+
+	//need seperate dbconnection here.
+	dbconn := model.NewDatabase("eoin", "pass", "weather_app")
+	citydao := model.NewCityDAO(dbconn)
+	allcities := citydao.GetAllCities()
+
+	city := utils.FindClosest(allcities, lat, longit)
+	weatherdao := model.NewDailyWeatherDAO(dbconn)
+	cityslice := weatherdao.Get(city.Name)
+
+	if len(cityslice) > 0 {
+		c.JSON(http.StatusOK, gin.H{"data": cityslice})
+	}
+
 }
