@@ -56,18 +56,10 @@ func GetCity(c *gin.Context) {
 
 func GetWeatherData(c *gin.Context) {
 
-	//var lat float64 = c.Param("lat")
-	//var longit float64 = c.Param("long")
+	lat, err1 := strconv.ParseFloat(c.Param("lat"), 64)
+	longit, err2 := strconv.ParseFloat(c.Param("long"), 64)
 
-	lat, err := strconv.ParseFloat(c.Param("lat"), 64)
-
-	if err != nil {
-		println("conv error")
-	}
-
-	longit, err := strconv.ParseFloat(c.Param("long"), 64)
-
-	if err != nil {
+	if err1 != nil || err2 != nil {
 		println("conv error")
 	}
 
