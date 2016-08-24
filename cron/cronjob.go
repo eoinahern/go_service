@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/eoinahern/go_service/domain/entities"
-	"github.com/eoinahern/go_service/domain/model"
+	"github.com/eoinahern/go_service/src/domain/entities"
+	"github.com/eoinahern/go_service/src/domain/model"
 )
 
 //1.call external service for each city in my db!!
