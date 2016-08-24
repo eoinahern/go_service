@@ -3,7 +3,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/eoinahern/go_service/src/domain/model"
+	"github.com/eoinahern/go_service/domain/model"
 )
 
 //failing tests now as more cities added to db.

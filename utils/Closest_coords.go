@@ -3,7 +3,7 @@ package utils
 import (
 	"math"
 
-	"github.com/eoinahern/go_service/src/domain/entities"
+	"github.com/eoinahern/go_service/domain/entities"
 )
 
 //brute force algorithm for now

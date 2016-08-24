@@ -3,8 +3,8 @@ package tests
 import (
 	"testing"
 
-	"github.com/eoinahern/go_service/src/domain/entities"
-	"github.com/eoinahern/go_service/src/domain/model"
+	"github.com/eoinahern/go_service/domain/entities"
+	"github.com/eoinahern/go_service/domain/model"
 )
 
 //could do with another test db here.

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/eoinahern/go_service/src/domain/entities"
+	"github.com/eoinahern/go_service/domain/entities"
 )
 
 func Test_Nearest(t *testing.T) {

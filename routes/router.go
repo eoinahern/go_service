@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/eoinahern/go_service/src/domain/model"
-	"github.com/eoinahern/go_service/src/utils"
+	"github.com/eoinahern/go_service/domain/model"
+	"github.com/eoinahern/go_service/utils"
 	"github.com/gin-gonic/gin"
 )
 

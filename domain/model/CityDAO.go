@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/eoinahern/go_service/src/domain/entities"
+	"github.com/eoinahern/go_service/domain/entities"
 )
 
 func NewCityDAO(dbconnin *Database) *CityDAO {

@@ -6,7 +6,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/eoinahern/go_service/src/domain/entities"
+	"github.com/eoinahern/go_service/domain/entities"
 )
 
 func NewDailyWeatherDAO(dbconnin *Database) *DailyWeatherDAO {
