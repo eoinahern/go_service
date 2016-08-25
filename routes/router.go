@@ -75,7 +75,6 @@ func GetWeatherData(c *gin.Context) {
 	fmt.Printf("closest city name is : %s", city.Name)
 
 	weatherdao := model.NewDailyWeatherDAO(dbconn)
-
 	//problem exists with get call
 	cityslice := weatherdao.Get(string(city.Name))
 	fmt.Println(cityslice)

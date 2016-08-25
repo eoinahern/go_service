@@ -64,8 +64,9 @@ func Test_Get(t *testing.T) {
 	fmt.Printf("num rows = %d", len(dailylist))
 
 	for _, item := range dailylist {
-		if item == nil || len(item.Name) > 0 {
-			t.Error("null item found")
+
+		if item == nil || len(item.Name) == 0 || len(item.Summary) == 0 || len(item.Icon) == 0 {
+			t.Error("null variable found")
 		}
 
 		if reflect.TypeOf(item.Name).String() != "string" {

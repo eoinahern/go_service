@@ -95,7 +95,10 @@ func (dw *DailyWeatherDAO) Delete(city string, time int) int {
 
 func (dw *DailyWeatherDAO) Get(city string) []*entities.DailyWeather {
 
-	rows, err := dw.dbconn.mydbconn.Query("SELECT * FROM dailyweather WHERE name = ?;", city)
+	querystr := fmt.Sprintf("SELECT * FROM dailyweather WHERE name = '%s';", city)
+	fmt.Println(querystr)
+	//rows, err := dw.dbconn.mydbconn.Query(querystr)
+	rows, err := dw.base.db.mydbconn.Query(querystr)
 
 	if err != nil {
 		println("error calling query")
@@ -118,11 +121,9 @@ func createJsonWeather(rows *sql.Rows) []*entities.DailyWeather {
 		var dailyweather = entities.NewDailyWeather()
 		rows.Scan(&dailyweather.Name, &dailyweather.Time, &dailyweather.Summary,
 			&dailyweather.Icon, &dailyweather.SunriseTime, &dailyweather.SunsetTime,
-			&dailyweather.PrecipProbability, &dailyweather.TemperatureMin,
-			&dailyweather.TemperatureMinTime, &dailyweather.TemperatureMax,
-			&dailyweather.TemperatureMaxTime, &dailyweather.ApparentTemperatureMaxTime,
-			&dailyweather.DewPoint, &dailyweather.WindSpeed, &dailyweather.Humidity,
-			&dailyweather.Pressure, &dailyweather.CloudCover)
+			&dailyweather.PrecipProbability, &dailyweather.TemperatureMin, &dailyweather.TemperatureMinTime,
+			&dailyweather.TemperatureMax, &dailyweather.TemperatureMaxTime, &dailyweather.ApparentTemperatureMaxTime,
+			&dailyweather.DewPoint, &dailyweather.WindSpeed, &dailyweather.Humidity, &dailyweather.Pressure, &dailyweather.CloudCover)
 
 		data = append(data, dailyweather)
 	}
