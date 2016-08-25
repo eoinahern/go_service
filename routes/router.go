@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -24,8 +25,8 @@ func NewRouter() *Router {
 	r.Ginrouter = gin.Default()
 	r.Routergroup = r.Ginrouter.Group("api/v1")
 	{
-		r.Routergroup.GET("/:id", GetCity)
-		r.Routergroup.GET("/:lat,:long", GetWeatherData)
+		//r.Routergroup.GET("/:id", GetCity)
+		r.Routergroup.GET("/:lat/:long", GetWeatherData)
 		r.Routergroup.DELETE("/", notImplemented)
 		r.Routergroup.POST("/", notImplemented)
 		r.Routergroup.PUT("/", notImplemented)
@@ -66,14 +67,18 @@ func GetWeatherData(c *gin.Context) {
 	println(lat)
 	println(longit)
 
-	//need seperate dbconnection here.
-	dbconn := model.NewDatabase("eoin", "pass", "weather_app")
+	dbconn := model.NewDatabase("eoin", "pass", "weather_app_test")
 	citydao := model.NewCityDAO(dbconn)
 	allcities := citydao.GetAllCities()
 
 	city := utils.FindClosest(allcities, lat, longit)
+	fmt.Printf("closest city name is : %s", city.Name)
+
 	weatherdao := model.NewDailyWeatherDAO(dbconn)
-	cityslice := weatherdao.Get(city.Name)
+
+	//problem exists with get call
+	cityslice := weatherdao.Get(string(city.Name))
+	fmt.Println(cityslice)
 
 	if len(cityslice) > 0 {
 		c.JSON(http.StatusOK, gin.H{"data": cityslice})

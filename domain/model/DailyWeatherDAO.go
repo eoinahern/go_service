@@ -93,7 +93,7 @@ func (dw *DailyWeatherDAO) Delete(city string, time int) int {
 	return checkcount(rows)
 }
 
-func (dw *DailyWeatherDAO) Get(city string) []entities.DailyWeather {
+func (dw *DailyWeatherDAO) Get(city string) []*entities.DailyWeather {
 
 	rows, err := dw.dbconn.mydbconn.Query("SELECT * FROM dailyweather WHERE name = ?;", city)
 
@@ -104,22 +104,27 @@ func (dw *DailyWeatherDAO) Get(city string) []entities.DailyWeather {
 
 	defer rows.Close()
 	newrows := createJsonWeather(rows)
-	rows.Close()
 	return newrows
 }
 
 //wasnt sure how to make this more generic just yet.
 //params differ etc need to be scanned into slice
 
-func createJsonWeather(rows *sql.Rows) []entities.DailyWeather {
+func createJsonWeather(rows *sql.Rows) []*entities.DailyWeather {
 
-	data := make([]entities.DailyWeather, 0)
+	var data = make([]*entities.DailyWeather, 0)
 	for rows.Next() {
 
-		dailyweather := entities.NewDailyWeather()
-		rows.Scan(&dailyweather.Name, &dailyweather.Icon, &dailyweather.Time,
-			dailyweather.Summary)
-		data = append(data, *dailyweather)
+		var dailyweather = entities.NewDailyWeather()
+		rows.Scan(&dailyweather.Name, &dailyweather.Time, &dailyweather.Summary,
+			&dailyweather.Icon, &dailyweather.SunriseTime, &dailyweather.SunsetTime,
+			&dailyweather.PrecipProbability, &dailyweather.TemperatureMin,
+			&dailyweather.TemperatureMinTime, &dailyweather.TemperatureMax,
+			&dailyweather.TemperatureMaxTime, &dailyweather.ApparentTemperatureMaxTime,
+			&dailyweather.DewPoint, &dailyweather.WindSpeed, &dailyweather.Humidity,
+			&dailyweather.Pressure, &dailyweather.CloudCover)
+
+		data = append(data, dailyweather)
 	}
 
 	if len(data) < 1 {

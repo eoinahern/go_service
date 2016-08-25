@@ -57,7 +57,7 @@ func (dw *CityDAO) GetAllCities() []*entities.City {
 
 func createEntities(rows *sql.Rows) []*entities.City {
 
-	data := make([]*entities.City, 0)
+	var data = make([]*entities.City, 0)
 	for rows.Next() {
 
 		var city = entities.NewCity()

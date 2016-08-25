@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 )
 
@@ -17,9 +18,12 @@ func NewBaseDao(dbconnin *Database) *baseDao {
 
 func (base *baseDao) CountRows(table string) int {
 
-	rows, err := base.db.mydbconn.Query("SELECT COUNT(*) FROM %s", table)
+	query := fmt.Sprintf("SELECT COUNT(*) FROM %s", table)
+
+	rows, err := base.db.mydbconn.Query(query)
 	if err != nil {
 		println("couldnt count rows!!!")
+		println(query)
 		log.Fatal(err)
 	}
 

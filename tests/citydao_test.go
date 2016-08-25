@@ -1,12 +1,30 @@
 package tests
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/eoinahern/go_service/domain/model"
 )
 
 //failing tests now as more cities added to db.
+
+func Test_getSingleCity(t *testing.T) {
+
+	dbconn := model.NewDatabase("eoin", "pass", "weather_app_test")
+	citydao := model.NewCityDAO(dbconn)
+
+	cit := citydao.GetByCity("cork")
+
+	fmt.Println(cit)
+
+	for _, item := range cit {
+		if item.Name != "cork" {
+			t.Error("incorrect City name returned")
+		}
+	}
+
+}
 
 func Test_getbycity(t *testing.T) {
 

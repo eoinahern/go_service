@@ -1,14 +1,13 @@
 package tests
 
 import (
+	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/eoinahern/go_service/domain/entities"
 	"github.com/eoinahern/go_service/domain/model"
 )
-
-//could do with another test db here.
-//at present testing prod.
 
 var name string
 var pass string
@@ -23,6 +22,8 @@ func init() {
 	var database = model.NewDatabase(name, pass, db)
 	dailywdao = model.NewDailyWeatherDAO(database)
 }
+
+//need get test
 
 func Test_Insert(t *testing.T) {
 
@@ -51,6 +52,27 @@ func Test_Delete(t *testing.T) {
 		t.Error("delete failed!!!")
 	}
 
+}
+
+func Test_Get(t *testing.T) {
+
+	dailylist := dailywdao.Get("cork")
+	if dailywdao.CountRows() == 0 {
+		t.Error("counted rows returned 0")
+	}
+
+	fmt.Printf("num rows = %d", len(dailylist))
+
+	for _, item := range dailylist {
+		if item == nil || len(item.Name) > 0 {
+			t.Error("null item found")
+		}
+
+		if reflect.TypeOf(item.Name).String() != "string" {
+			t.Error("name is not in string format")
+		}
+
+	}
 }
 
 func create_dailyweather() []*entities.DailyWeather {
