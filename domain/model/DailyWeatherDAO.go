@@ -119,11 +119,16 @@ func createJsonWeather(rows *sql.Rows) []*entities.DailyWeather {
 	for rows.Next() {
 
 		var dailyweather = entities.NewDailyWeather()
-		rows.Scan(&dailyweather.Name, &dailyweather.Time, &dailyweather.Summary,
-			&dailyweather.Icon, &dailyweather.SunriseTime, &dailyweather.SunsetTime,
-			&dailyweather.PrecipProbability, &dailyweather.TemperatureMin, &dailyweather.TemperatureMinTime,
-			&dailyweather.TemperatureMax, &dailyweather.TemperatureMaxTime, &dailyweather.ApparentTemperatureMaxTime,
-			&dailyweather.DewPoint, &dailyweather.WindSpeed, &dailyweather.Humidity, &dailyweather.Pressure, &dailyweather.CloudCover)
+		error := rows.Scan(&dailyweather.Name, &dailyweather.Summary, &dailyweather.Icon,
+			/*&dailyweather.Icon, */ &dailyweather.SunriseTime, &dailyweather.SunsetTime,
+			&dailyweather.PrecipProbability, &dailyweather.TemperatureMin,
+			&dailyweather.TemperatureMinTime, &dailyweather.TemperatureMax, &dailyweather.TemperatureMaxTime,
+			&dailyweather.ApparentTemperatureMaxTime, &dailyweather.DewPoint, &dailyweather.WindSpeed,
+			&dailyweather.Humidity, &dailyweather.Pressure, &dailyweather.CloudCover, &dailyweather.Time)
+
+		if error != nil {
+			log.Fatal(error)
+		}
 
 		data = append(data, dailyweather)
 	}

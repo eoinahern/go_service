@@ -5,7 +5,14 @@ func NewDailyWeather() *DailyWeather {
 	return m
 }
 
+/**
+*	DailyWeather struct
+**/
+
 type DailyWeather struct {
+
+	//various vars assoiated with weather for a day in a location
+
 	Name                       string  `json:"name"`
 	Time                       int     `json:"time"`
 	Summary                    string  `json:"summary"`
