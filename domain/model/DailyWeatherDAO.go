@@ -120,7 +120,7 @@ func createJsonWeather(rows *sql.Rows) []*entities.DailyWeather {
 
 		var dailyweather = entities.NewDailyWeather()
 		error := rows.Scan(&dailyweather.Name, &dailyweather.Summary, &dailyweather.Icon,
-			/*&dailyweather.Icon, */ &dailyweather.SunriseTime, &dailyweather.SunsetTime,
+			&dailyweather.SunriseTime, &dailyweather.SunsetTime,
 			&dailyweather.PrecipProbability, &dailyweather.TemperatureMin,
 			&dailyweather.TemperatureMinTime, &dailyweather.TemperatureMax, &dailyweather.TemperatureMaxTime,
 			&dailyweather.ApparentTemperatureMaxTime, &dailyweather.DewPoint, &dailyweather.WindSpeed,
