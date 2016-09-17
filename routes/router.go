@@ -2,9 +2,7 @@ package routes
 
 import (
 	"fmt"
-	"log"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/eoinahern/go_service/domain/model"
@@ -34,12 +32,15 @@ func NewRouter() *Router {
 		r.Routergroup.PUT("/", notImplemented)
 	}
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		log.Fatal("$PORT must be set")
-	}
+	//run on herokus port no!!!
+	//for testing use 8080
 
-	r.Ginrouter.Run(":" + port)
+	/*	port := os.Getenv("PORT")
+		if port == "" {
+			log.Fatal("$PORT must be set")
+		}*/
+
+	r.Ginrouter.Run(":8080")
 	return r
 }
 

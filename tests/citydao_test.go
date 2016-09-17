@@ -7,7 +7,7 @@ import (
 	"github.com/eoinahern/go_service/domain/model"
 )
 
-//failing tests now as more cities added to db.
+//these are more like end-to-end tests!!!
 
 func Test_getSingleCity(t *testing.T) {
 

@@ -36,9 +36,6 @@ func LoadServiceDataPerCity() {
 		lat := strconv.FormatFloat(cityval.Latitude, 'f', 5, 64)
 		longit := strconv.FormatFloat(cityval.Longitude, 'f', 5, 64)
 
-		println(lat)
-		println(longit)
-
 		cal := fmt.Sprintf("https://api.forecast.io/forecast/%s/%s,%s", apikey, lat, longit)
 		println(cal)
 		resp, err := http.Get(cal)
@@ -52,6 +49,11 @@ func LoadServiceDataPerCity() {
 		dailyweather := unmarshallData(resp)
 		weatherdatawname := appendName(cityval.Name, dailyweather.Dailydata.Dw)
 		fmt.Println(dailyweather.Dailydata.Dw)
+
+		//delete previous data
+		dailyweatherdao.DeleteAll(cityval.Name)
+
+		//add ew data
 		go InsertData(weatherdatawname, dailyweatherdao)
 		resp.Body.Close()
 	}

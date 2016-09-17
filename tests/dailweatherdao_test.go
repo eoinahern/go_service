@@ -23,7 +23,7 @@ func init() {
 	dailywdao = model.NewDailyWeatherDAO(database)
 }
 
-//need get test
+//end to end test to test db
 
 func Test_Insert(t *testing.T) {
 
@@ -36,22 +36,16 @@ func Test_Insert(t *testing.T) {
 
 }
 
-//count rows arter item deleted
 func Test_Delete(t *testing.T) {
 
 	testdw := create_dailyweather()
-	inserted := dailywdao.Insert(testdw)
-	if inserted == false {
-		t.Error("insert failed!!! oops!! delete test")
+	dailywdao.Insert(testdw)
+	_, err := dailywdao.DeleteAll("cork")
+
+	if err != nil {
+		t.Error(err.Error())
 	}
-
-	count := dailywdao.CountRows()
-	dailywdao.Delete("cork", 1469287025)
-
-	if count > dailywdao.CountRows() {
-		t.Error("delete failed!!!")
-	}
-
+	//fmt.Println(strires.RowsAffected())
 }
 
 func Test_Get(t *testing.T) {
@@ -79,6 +73,7 @@ func Test_Get(t *testing.T) {
 func create_dailyweather() []*entities.DailyWeather {
 
 	//fake obj
+
 	dailwslice := make([]*entities.DailyWeather, 0)
 	dailyweather := entities.NewDailyWeather()
 

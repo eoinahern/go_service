@@ -78,6 +78,8 @@ func (dw *DailyWeatherDAO) CountRows() int {
 	return dw.base.CountRows("dailyweather")
 }
 
+//prob ot eeded ow
+
 func (dw *DailyWeatherDAO) Delete(city string, time int) int {
 
 	stmt := fmt.Sprintf("Delete FROM dailyweather WHERE name = '%s' AND time = %d", city, time)
@@ -91,6 +93,24 @@ func (dw *DailyWeatherDAO) Delete(city string, time int) int {
 
 	defer rows.Close()
 	return checkcount(rows)
+}
+
+/**
+* dlelte all for  specific place name
+*
+ */
+
+func (dw *DailyWeatherDAO) DeleteAll(place string) (sql.Result, error) {
+
+	res, err := dw.base.db.mydbconn.Exec("DELETE FROM dailyweather WHERE name = ? ", place)
+
+	if err != nil {
+		println("Delete all error!!")
+		log.Output(1, "delete error")
+	}
+
+	return res, err
+
 }
 
 func (dw *DailyWeatherDAO) Get(city string) []*entities.DailyWeather {
