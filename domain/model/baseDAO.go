@@ -6,6 +6,10 @@ import (
 	"log"
 )
 
+//Username: 	bd145d3b601f2e
+//Password: 	532d35c9
+//heroku_1587748f259385b
+
 type baseDao struct {
 	db *Database
 }

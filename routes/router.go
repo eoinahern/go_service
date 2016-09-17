@@ -94,13 +94,17 @@ func GetWeatherData(c *gin.Context) {
 
 	weatherdao := model.NewDailyWeatherDAO(dbconn)
 	//problem exists with get call
+
 	cityslice := weatherdao.Get(string(city.Name))
 	fmt.Println(cityslice)
 
+	var status int
+
 	if len(cityslice) == 0 {
-		c.JSON(http.StatusNoContent, gin.H{"data": "nothing found! sorry"})
-		c.Abort()
+		status = 204
+	} else {
+		status = 200
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": cityslice})
+	c.JSON(status, gin.H{"data": cityslice})
 }
