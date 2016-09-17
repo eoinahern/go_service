@@ -97,11 +97,10 @@ func GetWeatherData(c *gin.Context) {
 	cityslice := weatherdao.Get(string(city.Name))
 	fmt.Println(cityslice)
 
-	if len(cityslice) > 0 {
-		c.JSON(http.StatusOK, gin.H{"data": cityslice})
-		return
+	if len(cityslice) == 0 {
+		c.JSON(http.StatusNoContent, gin.H{"data": "nothing found! sorry"})
+		c.Abort()
 	}
 
-	c.JSON(http.StatusNoContent, gin.H{"data": "nothing found! sorry"})
-
+	c.JSON(http.StatusOK, gin.H{"data": cityslice})
 }
