@@ -20,6 +20,8 @@ import (
 //Password: 	532d35c9
 //heroku_1587748f259385b
 
+var dbconn = model.NewDatabase("bd145d3b601f2e", "532d35c9", "heroku_1587748f259385b")
+
 type Router struct {
 	Ginrouter   *gin.Engine
 	Routergroup *gin.RouterGroup
@@ -60,7 +62,7 @@ func GetCity(c *gin.Context) {
 
 	city := c.Param("id")
 
-	dbconn := model.NewDatabase("bd145d3b601f2e", "532d35c9", "heroku_1587748f259385b")
+	//dbconn := model.NewDatabase("bd145d3b601f2e", "532d35c9", "heroku_1587748f259385b")
 	citydao := model.NewCityDAO(dbconn)
 	citydata := citydao.GetByCity(city)
 
@@ -83,7 +85,7 @@ func GetWeatherData(c *gin.Context) {
 	println(lat)
 	println(longit)
 
-	dbconn := model.NewDatabase("bd145d3b601f2e", "532d35c9", "heroku_1587748f259385b")
+	//dbconn := model.NewDatabase("bd145d3b601f2e", "532d35c9", "heroku_1587748f259385b")
 	citydao := model.NewCityDAO(dbconn)
 	allcities := citydao.GetAllCities()
 
