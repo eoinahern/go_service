@@ -25,7 +25,7 @@ func main() {
 func LoadServiceDataPerCity() {
 
 	var apikey string = "63f0914cdd082e76d25b40161cbe70c4"
-	dbconn := model.NewDatabase("eoin", "pass", "weather_app")
+	dbconn := model.NewDatabase("bd145d3b601f2e", "532d35c9", "heroku_1587748f259385b")
 	citydao := model.NewCityDAO(dbconn)
 	dailyweatherdao := model.NewDailyWeatherDAO(dbconn)
 	cities := citydao.GetAllCities()
@@ -33,11 +33,10 @@ func LoadServiceDataPerCity() {
 	for _, cityval := range cities {
 
 		//helper in utils possibly
+
 		lat := strconv.FormatFloat(cityval.Latitude, 'f', 5, 64)
 		longit := strconv.FormatFloat(cityval.Longitude, 'f', 5, 64)
-
 		cal := fmt.Sprintf("https://api.forecast.io/forecast/%s/%s,%s", apikey, lat, longit)
-		println(cal)
 		resp, err := http.Get(cal)
 
 		if err != nil {
@@ -45,19 +44,16 @@ func LoadServiceDataPerCity() {
 		}
 
 		defer resp.Body.Close()
-
 		dailyweather := unmarshallData(resp)
 		weatherdatawname := appendName(cityval.Name, dailyweather.Dailydata.Dw)
 		fmt.Println(dailyweather.Dailydata.Dw)
-
 		//delete previous data
 		dailyweatherdao.DeleteAll(cityval.Name)
-
 		//add ew data
 		go InsertData(weatherdatawname, dailyweatherdao)
 		resp.Body.Close()
-	}
 
+	}
 }
 
 func unmarshallData(resp *http.Response) *Fullapi {
