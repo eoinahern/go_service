@@ -122,6 +122,7 @@ func (dw *DailyWeatherDAO) Get(city string) []*entities.DailyWeather {
 
 	if err != nil {
 		println("error calling query")
+		println(city)
 		log.Fatal(err)
 	}
 
