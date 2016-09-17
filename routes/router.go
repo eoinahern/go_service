@@ -106,5 +106,6 @@ func GetWeatherData(c *gin.Context) {
 		status = 200
 	}
 
+	c.Abort()
 	c.JSON(status, gin.H{"data": cityslice})
 }
