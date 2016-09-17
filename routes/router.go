@@ -2,7 +2,9 @@ package routes
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/eoinahern/go_service/domain/model"
@@ -13,6 +15,10 @@ import (
 /*
 * bit verbose for my liking also dont like this repeating dc connection.
 **/
+
+//Username: 	bd145d3b601f2e
+//Password: 	532d35c9
+//heroku_1587748f259385b
 
 type Router struct {
 	Ginrouter   *gin.Engine
@@ -35,12 +41,14 @@ func NewRouter() *Router {
 	//run on herokus port no!!!
 	//for testing use 8080
 
-	/*	port := os.Getenv("PORT")
-		if port == "" {
-			log.Fatal("$PORT must be set")
-		}*/
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
 
-	r.Ginrouter.Run(":8080")
+	//r.Ginrouter.Run(":8080")
+
+	r.Ginrouter.Run(":" + port)
 	return r
 }
 
@@ -52,7 +60,7 @@ func GetCity(c *gin.Context) {
 
 	city := c.Param("id")
 
-	dbconn := model.NewDatabase("eoin", "pass", "weather_app")
+	dbconn := model.NewDatabase("bd145d3b601f2e", "532d35c9", "heroku_1587748f259385b")
 	citydao := model.NewCityDAO(dbconn)
 	citydata := citydao.GetByCity(city)
 
@@ -75,7 +83,7 @@ func GetWeatherData(c *gin.Context) {
 	println(lat)
 	println(longit)
 
-	dbconn := model.NewDatabase("eoin", "pass", "weather_app_test")
+	dbconn := model.NewDatabase("bd145d3b601f2e", "532d35c9", "heroku_1587748f259385b")
 	citydao := model.NewCityDAO(dbconn)
 	allcities := citydao.GetAllCities()
 
