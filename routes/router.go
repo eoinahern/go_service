@@ -90,7 +90,7 @@ func GetWeatherData(c *gin.Context) {
 	allcities := citydao.GetAllCities()
 
 	city := utils.FindClosest(allcities, lat, longit)
-	fmt.Printf("closest city name is : %s", city.Name)
+	fmt.Printf("closest city name iss = %s \n", city.Name)
 
 	weatherdao := model.NewDailyWeatherDAO(dbconn)
 	//problem exists with get call
