@@ -99,8 +99,9 @@ func GetWeatherData(c *gin.Context) {
 
 	if len(cityslice) > 0 {
 		c.JSON(http.StatusOK, gin.H{"data": cityslice})
-	} else {
-		c.JSON(http.StatusNoContent, gin.H{"data": "nothing found! sorry"})
+		return
 	}
+
+	c.JSON(http.StatusNoContent, gin.H{"data": "nothing found! sorry"})
 
 }
