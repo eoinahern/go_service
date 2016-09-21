@@ -24,8 +24,6 @@ var wg sync.WaitGroup
 
 func initvars() {
 
-	//dbconn = model.NewDatabase("bd145d3b601f2e", "532d35c9", "heroku_1587748f259385b")
-
 	dbconn = model.NewDatabase("eoin", "pass", "weather_app")
 	citydao = model.NewCityDAO(dbconn)
 	dailyweatherdao = model.NewDailyWeatherDAO(dbconn)
@@ -38,22 +36,26 @@ type Fullapi struct {
 
 func LoadServiceDataPerCity() {
 	initvars()
-	InsertRows()
-}
-
-func InsertRows() {
-
 	cities := citydao.GetAllCities()
 	wg.Add(len(cities) + 1)
+	InsertRows(cities)
+}
+
+func InsertRows(cities []*entities.City) {
 
 	go func() {
-
 		for _, cityval := range cities {
 			lat, longit := getCoordsString(cityval.Latitude, cityval.Longitude)
+			resp, err := callService(lat, longit)
 
-			dailyweatherdao.DeleteAll(cityval.Name)
-			resp := callSevice(lat, longit)
+			if err != nil {
+				println("error on api call")
+				log.Fatal(err)
+			}
+
+			defer resp.Body.Close()
 			ch1 <- buildObj(resp, cityval.Name)
+			dailyweatherdao.DeleteAll(cityval.Name)
 			wg.Done()
 		}
 		close(ch1)
@@ -72,18 +74,11 @@ func getCoordsString(lat float64, long float64) (slong string, slat string) {
 
 }
 
-func callSevice(lat string, long string) (resp *http.Response) {
+func callService(lat string, long string) (resp *http.Response, err error) {
 
 	cal := fmt.Sprintf("https://api.forecast.io/forecast/%s/%s,%s", apikey, lat, long)
-	response, err := http.Get(cal)
+	return http.Get(cal)
 
-	if err != nil {
-		println("error on api call")
-		log.Fatal(err)
-	}
-
-	defer resp.Body.Close()
-	return response
 }
 
 func buildObj(resp *http.Response, name string) []*entities.DailyWeather {
