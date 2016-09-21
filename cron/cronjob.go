@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
+	"sync"
 
 	"github.com/eoinahern/go_service/domain/entities"
 	"github.com/eoinahern/go_service/domain/model"
@@ -13,47 +15,80 @@ import (
 
 //1.call external service for each city in my db!!
 //2. data for each call returns json obj
+var apikey = "63f0914cdd082e76d25b40161cbe70c4"
+var dbconn *model.Database
+var citydao *model.CityDAO
+var dailyweatherdao *model.DailyWeatherDAO
+var ch1 chan []*entities.DailyWeather
+var wg sync.WaitGroup
+
+func initvars() {
+
+	//dbconn = model.NewDatabase("bd145d3b601f2e", "532d35c9", "heroku_1587748f259385b")
+
+	dbconn = model.NewDatabase("eoin", "pass", "weather_app")
+	citydao = model.NewCityDAO(dbconn)
+	dailyweatherdao = model.NewDailyWeatherDAO(dbconn)
+	ch1 = make(chan []*entities.DailyWeather)
+}
 
 type Fullapi struct {
 	Dailydata entities.DailyWeatherContainer `json:"daily"`
 }
 
-func main() {
-	LoadServiceDataPerCity()
+func LoadServiceDataPerCity() {
+	initvars()
+	InsertRows()
 }
 
-func LoadServiceDataPerCity() {
+func InsertRows() {
 
-	var apikey string = "63f0914cdd082e76d25b40161cbe70c4"
-	dbconn := model.NewDatabase("bd145d3b601f2e", "532d35c9", "heroku_1587748f259385b")
-	citydao := model.NewCityDAO(dbconn)
-	dailyweatherdao := model.NewDailyWeatherDAO(dbconn)
 	cities := citydao.GetAllCities()
+	wg.Add(len(cities) + 1)
 
-	for _, cityval := range cities {
+	go func() {
 
-		//helper in utils possibly
+		for _, cityval := range cities {
+			lat, longit := getCoordsString(cityval.Latitude, cityval.Longitude)
 
-		lat := strconv.FormatFloat(cityval.Latitude, 'f', 5, 64)
-		longit := strconv.FormatFloat(cityval.Longitude, 'f', 5, 64)
-		cal := fmt.Sprintf("https://api.forecast.io/forecast/%s/%s,%s", apikey, lat, longit)
-		resp, err := http.Get(cal)
-
-		if err != nil {
-			println("error on api call")
+			dailyweatherdao.DeleteAll(cityval.Name)
+			resp := callSevice(lat, longit)
+			ch1 <- buildObj(resp, cityval.Name)
+			wg.Done()
 		}
+		close(ch1)
 
-		defer resp.Body.Close()
-		dailyweather := unmarshallData(resp)
-		weatherdatawname := appendName(cityval.Name, dailyweather.Dailydata.Dw)
-		fmt.Println(dailyweather.Dailydata.Dw)
-		//delete previous data
-		dailyweatherdao.DeleteAll(cityval.Name)
-		//add ew data
-		go InsertData(weatherdatawname, dailyweatherdao)
-		resp.Body.Close()
+	}()
 
+	go InsertData()
+	wg.Wait()
+}
+
+func getCoordsString(lat float64, long float64) (slong string, slat string) {
+
+	latit := strconv.FormatFloat(lat, 'f', 5, 64)
+	longit := strconv.FormatFloat(long, 'f', 5, 64)
+	return latit, longit
+
+}
+
+func callSevice(lat string, long string) (resp *http.Response) {
+
+	cal := fmt.Sprintf("https://api.forecast.io/forecast/%s/%s,%s", apikey, lat, long)
+	response, err := http.Get(cal)
+
+	if err != nil {
+		println("error on api call")
+		log.Fatal(err)
 	}
+
+	defer resp.Body.Close()
+	return response
+}
+
+func buildObj(resp *http.Response, name string) []*entities.DailyWeather {
+	dailyweather := unmarshallData(resp)
+	return appendName(name, dailyweather.Dailydata.Dw)
 }
 
 func unmarshallData(resp *http.Response) *Fullapi {
@@ -77,6 +112,10 @@ func appendName(citname string, dailywlist []*entities.DailyWeather) []*entities
 
 //4. add each dailyweather element to the dailweather database
 
-func InsertData(dailyweather []*entities.DailyWeather, weatherdao *model.DailyWeatherDAO) {
-	weatherdao.Insert(dailyweather)
+func InsertData() {
+
+	for val := range ch1 {
+		dailyweatherdao.Insert(val)
+	}
+	wg.Done()
 }

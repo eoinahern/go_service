@@ -18,7 +18,7 @@ var dailywdao *model.DailyWeatherDAO
 func init() {
 	var name = "eoin"
 	var pass = "pass"
-	var db = "weather_app_test"
+	var db = "weather_app"
 	var database = model.NewDatabase(name, pass, db)
 	dailywdao = model.NewDailyWeatherDAO(database)
 }

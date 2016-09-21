@@ -20,7 +20,8 @@ import (
 //Password: 	532d35c9
 //heroku_1587748f259385b
 
-var dbconn = model.NewDatabase("bd145d3b601f2e", "532d35c9", "heroku_1587748f259385b")
+//var dbconn = model.NewDatabase("bd145d3b601f2e", "532d35c9", "heroku_1587748f259385b")
+var dbconn = model.NewDatabase("eoin", "pass", "weather_app")
 
 type Router struct {
 	Ginrouter   *gin.Engine

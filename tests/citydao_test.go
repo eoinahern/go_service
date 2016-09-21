@@ -11,7 +11,7 @@ import (
 
 func Test_getSingleCity(t *testing.T) {
 
-	dbconn := model.NewDatabase("eoin", "pass", "weather_app_test")
+	dbconn := model.NewDatabase("eoin", "pass", "weather_app")
 	citydao := model.NewCityDAO(dbconn)
 
 	cit := citydao.GetByCity("cork")
